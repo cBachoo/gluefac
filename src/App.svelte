@@ -6,24 +6,29 @@
   import type { CharaData } from "./types";
 
   let trainedCharas: CharaData[] | undefined = $state();
-  let files: FileList | null = $state(null);
-  $effect(() => {
-    if (files) {
+  if (import.meta.env.DEV) {
+    const loader = import.meta.glob("../data.json")["../data.json"];
+    if (loader) {
+      loader().then((resp) => {
+        let data = resp as { default: CharaData[] };
+        trainedCharas = data.default;
+      });
     }
-  });
+  }
 </script>
 
 <main class="container container-fluid text-center">
-  <div class="my-4 text-center">
-    <h1 class="display-5 fw-bold text-body-emphasis">
-      Uma Ground<strike style="font-size: 14px;">work</strike>
-    </h1>
-    <img src={veteranLogo} class="logo" alt="Vite Logo" />
-  </div>
   {#if trainedCharas}
     <TrainedCharaList {trainedCharas}></TrainedCharaList>
+  {:else}
+    <div class="text-center py-4">
+      <h1 class="display-5 fw-bold text-body-emphasis">
+        Uma Ground<strike style="font-size: 14px;">work</strike>
+      </h1>
+      <img src={veteranLogo} class="logo" alt="Vite Logo" />
+    </div>
+    <Upload uploaddata={(data: CharaData[]) => (trainedCharas = data)} />
   {/if}
-  <Upload uploaddata={(data: CharaData[]) => (trainedCharas = data)} />
 </main>
 
 <style>

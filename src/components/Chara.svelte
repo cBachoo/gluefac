@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { CharaData } from "../types";
-  import { charaCardsData, factorsData, skillsData } from "../data";
+  import { charaCardsData } from "../data";
   import Stats from "./Stats.svelte";
-  import Factor from "./Factor.svelte";
   import SuccessionChara from "./SuccessionChara.svelte";
   import SkillList from "./SkillList.svelte";
   import FactorList from "./FactorList.svelte";
@@ -10,12 +9,16 @@
 
   interface Props {
     charaData: CharaData;
+    display: {
+      stats: boolean;
+      factors: boolean;
+    };
   }
-  const { charaData }: Props = $props();
+  const { charaData, display }: Props = $props();
 
   const charaCard = $derived(charaCardsData[charaData.card_id]);
   const charaCardLabel = $derived(
-    charaCard?.name.replace("]", "]\n") ||
+    charaCard?.name.replace("] ", "]\n") ||
       `Unknown Chara (${charaData.card_id})`,
   );
 
@@ -35,7 +38,7 @@
     return `/chara/chr${charaId}/trained_chr_icon_${charaId}_${paddedDressId}_${suffix}.png`;
   });
 
-  const sanitizeId = (id: string) => id.replace(/[: ]/g, "-");
+  const charaDatetime = $derived(charaData.create_time.split(" "));
 </script>
 
 <div class="card h-100">
@@ -44,8 +47,14 @@
     <div class="d-flex align-items-center">
       <img src={charaThumb} alt={charaCardLabel} class="card-header-img" />
       <div class="flex-grow-1">
-        <h5 class="card-title mb-1">{charaCardLabel}</h5>
-        <small>{charaData.create_time}</small>
+        <p class="card-title fs-5">{charaCardLabel}</p>
+      </div>
+      <div
+        class="font-monospace text-end d-flex flex-column"
+        style="font-size: 14px;"
+      >
+        <div>{charaDatetime[0]}</div>
+        <div>{charaDatetime[1]}</div>
       </div>
     </div>
     <ul class="nav nav-tabs card-header-tabs" role="tablist">
@@ -89,25 +98,31 @@
         aria-labelledby={`main-tab-${charaData.chara_seed}`}
         tabindex="0"
       >
-        <Stats
-          speed={charaData.speed}
-          stamina={charaData.stamina}
-          power={charaData.power}
-          guts={charaData.guts}
-          wiz={charaData.wiz}
-        ></Stats>
-        <Apttitudes {charaData}></Apttitudes>
-        <hr />
-        <SkillList skillList={charaData.skill_array}></SkillList>
-        <hr />
-        <FactorList factorIds={charaData.factor_id_array}></FactorList>
-        <hr />
-        <FactorList
-          factorIds={[
-            ...charaData.succession_chara_array[0].factor_id_array,
-            ...charaData.succession_chara_array[1].factor_id_array,
-          ]}
-        ></FactorList>
+        {#if display.stats}
+          <Stats
+            speed={charaData.speed}
+            stamina={charaData.stamina}
+            power={charaData.power}
+            guts={charaData.guts}
+            wiz={charaData.wiz}
+          ></Stats>
+          <Apttitudes {charaData}></Apttitudes>
+          <hr />
+          <SkillList skillList={charaData.skill_array}></SkillList>
+          {#if display.factors}
+            <hr />
+          {/if}
+        {/if}
+        {#if display.factors}
+          <FactorList factorIds={charaData.factor_id_array}></FactorList>
+          <hr />
+          <FactorList
+            factorIds={[
+              ...charaData.succession_chara_array[0].factor_id_array,
+              ...charaData.succession_chara_array[1].factor_id_array,
+            ]}
+          ></FactorList>
+        {/if}
       </div>
       <div
         class="tab-pane fade"
@@ -137,7 +152,7 @@
     white-space: pre;
   }
   .card-header-img {
-    height: 74px;
-    width: 70px;
+    height: 68px;
+    width: 64px;
   }
 </style>
