@@ -26,7 +26,7 @@ interface Skill {
 const createLookup = <T extends { id: number }>(data: T[]) =>
 	Object.fromEntries(data.map((item) => [item.id, item]));
 
-const factorsData = createLookup(factorData as Factor[]);
+const factorsData = createLookup((factorData as any).value as Factor[]);
 const charaCardsData = createLookup(characardData as CharaCard[]);
 const skillsData = createLookup(skillData as Skill[]);
 
