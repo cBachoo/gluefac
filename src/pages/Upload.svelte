@@ -104,8 +104,8 @@
                     <div class="step-content flex-grow-1">
                         <h6 class="mb-2">Navigate to Veteran List</h6>
                         <p class="text-muted mb-3">
-                            In the game, go to Enhance, then Inheritance, then
-                            Veteran List.
+                            In the game, go to Enhance, then Veteran List, then
+                            click into List.
                         </p>
                         <div
                             class="guide-images d-flex align-items-center justify-content-center gap-3 flex-wrap"
@@ -126,11 +126,11 @@
                                 <img
                                     class="img-fluid rounded shadow-sm"
                                     src={`${import.meta.env.BASE_URL}guide/guide-02.png`}
-                                    alt="Step 2: Inheritance"
+                                    alt="Step 2: Veteran List"
                                     style="height: 72px;"
                                 />
                                 <small class="d-block mt-1 text-muted"
-                                    >Inheritance</small
+                                    >Veteran List</small
                                 >
                             </div>
                             <span class="text-muted fs-4">&rarr;</span>
@@ -138,11 +138,11 @@
                                 <img
                                     class="img-fluid rounded shadow-sm"
                                     src={`${import.meta.env.BASE_URL}guide/guide-03.png`}
-                                    alt="Step 3: Veteran List"
+                                    alt="Step 3: List"
                                     style="height: 72px;"
                                 />
                                 <small class="d-block mt-1 text-muted"
-                                    >Veteran List</small
+                                    >List</small
                                 >
                             </div>
                         </div>
