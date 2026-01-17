@@ -4,7 +4,7 @@ import { svelte } from "@sveltejs/vite-plugin-svelte";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [svelte()],
-  base: "/uma-rosterview/",
+  base: "/",
   // css: {
   // 	preprocessorOptions: {
   // 		scss: {
