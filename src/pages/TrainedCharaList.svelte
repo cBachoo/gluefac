@@ -99,10 +99,7 @@
             stars: 1,
         },
         greens: { stars: 0 },
-        whites: { stars: 1 } as {
-            [key: string]: boolean | number;
-            stars: number;
-        },
+        whites: {} as { [key: string]: number },
     });
 
     const availableWhites = $derived(() => {
@@ -116,7 +113,8 @@
         const whiteNames = new Set<string>();
         factorIds.forEach((id) => {
             const f = factorsData[id];
-            if (f?.type === 4) whiteNames.add(f.name);
+            // Type 4 = skill, Type 5 = race, Type 6 = scenario
+            if (f?.type === 4 || f?.type === 5 || f?.type === 6) whiteNames.add(f.name);
         });
         return Array.from(whiteNames).sort();
     });
@@ -196,18 +194,19 @@
                     isDisplayed = isDisplayed && hasGreen;
                 }
 
-                // Whites
+                // Whites - each skill now has its own min stars value
+                // Type 4 = skill, Type 5 = race, Type 6 = scenario
                 const selectedWhites = Object.entries(filters.whites)
-                    .filter(([k, v]) => k !== "stars" && v)
-                    .map(([k]) => k);
+                    .filter(([_, v]) => v > 0)
+                    .map(([k, v]) => ({ name: k, minStars: v }));
                 if (selectedWhites.length > 0) {
-                    const hasAllWhites = selectedWhites.every((skill) =>
+                    const hasAllWhites = selectedWhites.every(({ name, minStars }) =>
                         allFactors.some((id) => {
                             const f = factorsData[id];
                             return (
-                                f?.type === 4 &&
-                                f.name === skill &&
-                                f.rarity >= filters.whites.stars
+                                (f?.type === 4 || f?.type === 5 || f?.type === 6) &&
+                                f.name === name &&
+                                f.rarity >= minStars
                             );
                         }),
                     );

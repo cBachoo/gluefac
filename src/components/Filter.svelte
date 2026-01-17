@@ -23,7 +23,7 @@
                 stars: number;
             };
             greens: { stars: number };
-            whites: { [key: string]: boolean | number; stars: number };
+            whites: { [key: string]: number };
         };
         availableWhites: string[] | (() => string[]);
     }
@@ -67,14 +67,11 @@
         // Reset greens
         filters.greens.stars = 0;
 
-        // Reset whites - keep only stars property
-        const whiteKeys = Object.keys(filters.whites).filter(
-            (k) => k !== "stars",
-        );
+        // Reset whites - set all to 0
+        const whiteKeys = Object.keys(filters.whites);
         whiteKeys.forEach((k) => {
-            filters.whites[k] = false;
+            filters.whites[k] = 0;
         });
-        filters.whites.stars = 1;
     }
 </script>
 

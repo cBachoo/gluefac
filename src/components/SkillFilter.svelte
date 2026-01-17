@@ -1,6 +1,6 @@
 <script lang="ts">
     interface Props {
-        whites: { [key: string]: boolean | number; stars: number };
+        whites: { [key: string]: number }; // 0 = not selected, 1-3 = min stars
         availableWhites: string[] | (() => string[]);
     }
 
@@ -21,8 +21,10 @@
         ),
     );
 
-    const selectedCount = $derived(
-        Object.entries(whites).filter(([k, v]) => k !== "stars" && v).length,
+    const selectedWhites = $derived(
+        Object.entries(whites)
+            .filter(([_, v]) => v > 0)
+            .map(([k, v]) => ({ name: k, stars: v })),
     );
 
     function openModal() {
@@ -33,39 +35,47 @@
         showModal = false;
     }
 
-    function toggleSkill(skill: string) {
-        whites[skill] = !whites[skill];
+    function selectSkill(skill: string, stars: number) {
+        whites[skill] = stars;
+        searchWhites = ""; // Clear search after selection
+    }
+
+    function removeSkill(skill: string) {
+        whites[skill] = 0;
+    }
+
+    function cycleStars(skill: string) {
+        const current = whites[skill] || 0;
+        whites[skill] = current >= 3 ? 1 : current + 1;
     }
 </script>
 
 <div>
     <button class="btn btn-outline-secondary btn-sm mb-2" onclick={openModal}>
-        Select Skills ({selectedCount} selected)
+        Select Skills ({selectedWhites.length} selected)
     </button>
-    <label class="form-label">Min Stars:</label>
-    <div class="btn-group" role="group">
-        <button
-            type="button"
-            class="btn {whites.stars === 1
-                ? 'btn-primary'
-                : 'btn-outline-secondary'} btn-sm"
-            onclick={() => (whites.stars = 1)}>1</button
-        >
-        <button
-            type="button"
-            class="btn {whites.stars === 2
-                ? 'btn-primary'
-                : 'btn-outline-secondary'} btn-sm"
-            onclick={() => (whites.stars = 2)}>2</button
-        >
-        <button
-            type="button"
-            class="btn {whites.stars === 3
-                ? 'btn-primary'
-                : 'btn-outline-secondary'} btn-sm"
-            onclick={() => (whites.stars = 3)}>3</button
-        >
-    </div>
+    
+    {#if selectedWhites.length > 0}
+        <div class="d-flex flex-wrap gap-1 mt-1">
+            {#each selectedWhites as { name, stars }}
+                <span class="badge bg-warning text-dark d-flex align-items-center gap-1">
+                    <button 
+                        class="btn btn-sm p-0 border-0 bg-transparent"
+                        onclick={() => cycleStars(name)}
+                        title="Click to change stars"
+                    >
+                        {"★".repeat(stars)}{"☆".repeat(3 - stars)}
+                    </button>
+                    {name}
+                    <button 
+                        class="btn-close btn-close-sm ms-1" 
+                        style="font-size: 0.6rem;"
+                        onclick={() => removeSkill(name)}
+                    ></button>
+                </span>
+            {/each}
+        </div>
+    {/if}
 </div>
 
 {#if showModal}
@@ -76,7 +86,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Select Skills</h5>
+                    <h5 class="modal-title">Select White Sparks</h5>
                     <button
                         type="button"
                         class="btn-close"
@@ -88,20 +98,34 @@
                     <input
                         type="text"
                         class="form-control mb-3"
-                        placeholder="Search skills..."
+                        placeholder="Search sparks..."
                         bind:value={searchWhites}
                     />
                     <div style="max-height: 400px; overflow-y: auto;">
                         <div class="d-flex flex-wrap gap-2">
                             {#each filteredWhites as white}
-                                <button
-                                    class="btn {whites[white]
-                                        ? 'btn-warning'
-                                        : 'btn-outline-secondary'}"
-                                    onclick={() => toggleSkill(white)}
-                                >
-                                    {white}
-                                </button>
+                                {@const currentStars = whites[white] || 0}
+                                <div class="btn-group">
+                                    <button
+                                        class="btn {currentStars > 0
+                                            ? 'btn-warning'
+                                            : 'btn-outline-secondary'} btn-sm"
+                                        onclick={() => selectSkill(white, currentStars > 0 ? 0 : 1)}
+                                    >
+                                        {white}
+                                    </button>
+                                    {#if currentStars > 0}
+                                        <button
+                                            class="btn btn-warning btn-sm dropdown-toggle dropdown-toggle-split"
+                                            data-bs-toggle="dropdown"
+                                        ></button>
+                                        <ul class="dropdown-menu">
+                                            <li><button class="dropdown-item {currentStars === 1 ? 'active' : ''}" onclick={() => selectSkill(white, 1)}>★☆☆ (1+)</button></li>
+                                            <li><button class="dropdown-item {currentStars === 2 ? 'active' : ''}" onclick={() => selectSkill(white, 2)}>★★☆ (2+)</button></li>
+                                            <li><button class="dropdown-item {currentStars === 3 ? 'active' : ''}" onclick={() => selectSkill(white, 3)}>★★★ (3)</button></li>
+                                        </ul>
+                                    {/if}
+                                </div>
                             {/each}
                         </div>
                     </div>
