@@ -63,8 +63,8 @@
             {#each selectedWhites as { name, stars }}
                 <span class="badge bg-secondary text-white d-flex align-items-center gap-1" style="max-width: 100%; font-size: 0.7rem;">
                     <select
-                        class="border-0 bg-transparent text-white flex-shrink-0"
-                        style="width: 40px; font-size: 0.7rem; padding: 0; outline: none; -webkit-appearance: none; appearance: none; cursor: pointer;"
+                        class="flex-shrink-0 text-white"
+                        style="width: 40px; font-size: 0.7rem; padding: 1px 14px 1px 4px; outline: none; cursor: pointer; background: rgba(255,255,255,0.15) url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 12 12%22><path fill=%22white%22 d=%22M2 4l4 4 4-4z%22/></svg>') no-repeat right 2px center; border: 1px solid rgba(255,255,255,0.5); border-radius: 3px; -webkit-appearance: none; appearance: none;"
                         value={stars}
                         onchange={(e) => selectSkill(name, parseInt(e.currentTarget.value))}
                     >
