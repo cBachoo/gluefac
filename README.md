@@ -20,9 +20,9 @@ A web application for easily viewing and searching your umamusume veteran roster
 ## Data Structure
 
 The app uses JSON data files:
-- `characard.json`: Character information
+- `TerumiCharacterData.json`: Character information
 - `skill.json`: Skill data
-- `factor.json`: Factor/spark definitions
+- `TerumiFactorData.json`: Factor/spark definitions
 - `supportcard.json`: Support card data
 
 Character data includes trained stats, skills, factors, and succession arrays.

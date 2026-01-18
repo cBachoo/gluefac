@@ -1,5 +1,5 @@
-import factorData from "./assets/factor.json";
-import charaCardDataRaw from "./assets/characard.json";
+import factorData from "./assets/TerumiFactorData.json";
+import charaCardDataRaw from "./assets/TerumiCharacterData.json";
 
 interface Factor {
   id: number;
